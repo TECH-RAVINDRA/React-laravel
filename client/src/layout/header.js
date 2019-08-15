@@ -2,12 +2,19 @@ import React, { Component } from 'react';
 import logo from '../logo.png';
 import logoicon from '../logo-icon.png';
 import dp from '../1.jpg';
+import { Link, withRouter } from 'react-router-dom'
 
 
 class Header extends Component {
+
+    logOut(e) {
+        e.preventDefault();
+        localStorage.removeItem('userToken')
+        this.props.history.push('/login')
+    }
     render() {
         return (
-            <div className="Header">
+            <div className="Header ">
                 <header className="topbar" data-navbarbg="skin5">
                     <nav className="navbar top-navbar navbar-expand-md navbar-dark">
                         <div className="navbar-header" data-logobg="skin5">
@@ -31,17 +38,25 @@ class Header extends Component {
                             </ul>
                             <ul className="navbar-nav float-right">
                                 <li className="nav-item dropdown">
-                                    <a className="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a className="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <img src={dp} alt="user" className="rounded-circle" width="31"/>
                                     </a>
                                     <div className="dropdown-menu dropdown-menu-right user-dd animated">
+                                        <Link to="/profile"><a href className="dropdown-item">
+                                            <i className="ti-user m-r-5 m-l-5"></i> My Profile
+                                        </a></Link>
+                                        <div className="dropdown-divider"></div>
+                                        <a className="dropdown-item" href onClick={this.logOut.bind(this)} ><i className="fa fa-power-off m-r-5 m-l-5"></i> Logout
+                                        </a>
+                                    </div>
+                                    {/* <div className="dropdown-menu dropdown-menu-right user-dd animated">
                                         <a className="dropdown-item" href>
                                             <i className="ti-user m-r-5 m-l-5"></i> My Profile
                                         </a>
                                         <div className="dropdown-divider"></div>
                                         <a className="dropdown-item" href><i className="fa fa-power-off m-r-5 m-l-5"></i> Logout
                                         </a>
-                                    </div>
+                                    </div> */}
                                  </li>
                             </ul>
                         </div>
@@ -52,4 +67,7 @@ class Header extends Component {
     }
 }
 
-export default Header;
+export default withRouter(Header)
+
+// export default Header;
+
