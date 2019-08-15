@@ -1,46 +1,72 @@
-import React, { Component } from 'react';
-import Header from './layout/header';
-import Sidebar from './layout/sidebar';
-import Footer from './layout/footer';
-import Register from './components/Register';
-import { BrowserRouter as Router, Route } from 'react-router-dom'
-import Login from './components/Login';
-import Profile from './components/Profile';
+import React from "react";
+import "./App.scss";
+import { Login, Register } from "./components/Login/index";
 
-class App extends Component {
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLogginActive: true
+    };
+  }
+
+  componentDidMount() {
+    //Add .right by default
+    this.rightSide.classList.add("right");
+  }
+
+  changeState() {
+    const { isLogginActive } = this.state;
+
+    if (isLogginActive) {
+      this.rightSide.classList.remove("right");
+      this.rightSide.classList.add("left");
+    } else {
+      this.rightSide.classList.remove("left");
+      this.rightSide.classList.add("right");
+    }
+    this.setState(prevState => ({ isLogginActive: !prevState.isLogginActive }));
+  }
+
   render() {
-    const userLink = (<div id="main-wrapper">
-      <Header />
-      <Sidebar />
-      <div className="page-wrapper">
-        {/* <div id="content"> */}
-          <Route exact path='/profile' component={Profile} />
-        {/* </div> */}
-        <Footer />
-      </div>
-    </div>)
-    const loginRegLink = (
-        <div id="main-wrapper">
-        <Route exact path='/' component={Login} />
-          <Route exact path='/login' component={Login} />
-          <Route exact path='/register' component={Register} />
-        </div>
-    )
-
+    const { isLogginActive } = this.state;
+    const current = isLogginActive ? "Register" : "Login";
+    const currentActive = isLogginActive ? "login" : "register";
     return (
-      <Router>
-        <div className="App">
-          <div className="preloader">
-            <div className="lds-ripple">
-              <div className="lds-pos"></div>
-              <div className="lds-pos"></div>
-            </div>
+      <div className="App">
+        <div className="login">
+          <div className="container" ref={ref => (this.container = ref)}>
+            {isLogginActive && (
+              <Login containerRef={ref => (this.current = ref)} />
+            )}
+            {!isLogginActive && (
+              <Register containerRef={ref => (this.current = ref)} />
+            )}
           </div>
-          {localStorage.userToken ? userLink : loginRegLink}
+          <RightSide
+            current={current}
+            currentActive={currentActive}
+            containerRef={ref => (this.rightSide = ref)}
+            onClick={this.changeState.bind(this)}
+          />
         </div>
-      </Router>
+      </div>
     );
   }
 }
+
+const RightSide = props => {
+  return (
+    <div
+      className="right-side"
+      ref={props.containerRef}
+      onClick={props.onClick}
+    >
+      <div className="inner-container">
+        <div className="text">{props.current}</div>
+      </div>
+    </div>
+  );
+};
 
 export default App;
